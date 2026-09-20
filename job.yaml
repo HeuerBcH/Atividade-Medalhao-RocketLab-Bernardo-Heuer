@@ -1,0 +1,34 @@
+resources:
+  jobs:
+    Pipeline-Medalhao:
+      name: "Pipeline-Medalhao"
+      description: "Pipeline corporativo em Arquitetura Medalhão (Bronze, Silver, Gold) para o projeto CineData Analytics."
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?"
+        timezone_id: "America/Sao_Paulo"
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: "to_Bronze"
+          notebook_task:
+            notebook_path: "/Workspace/Users/bernchg@gmail.com/Landing_to_Bronze"
+            source: WORKSPACE
+          serverless_compute:
+            enabled: true
+
+        - task_key: "to_Silver"
+          depends_on:
+            - task_key: "to_Bronze"
+          notebook_task:
+            notebook_path: "/Workspace/Users/bernchg@gmail.com/Bronze_to_Silver"
+            source: WORKSPACE
+          serverless_compute:
+            enabled: true
+
+        - task_key: "to_Gold"
+          depends_on:
+            - task_key: "to_Silver"
+          notebook_task:
+            notebook_path: "/Workspace/Users/bernchg@gmail.com/Silver_to_Gold"
+            source: WORKSPACE
+          serverless_compute:
+            enabled: true
